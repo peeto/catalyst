@@ -4,9 +4,7 @@ namespace catalyst\userupload;
 
 class UserUpload
 {
-	protected $db;
-
-	protected function createTable($db): void {
+	protected static function createTable($db): void {
 		$sql = "CREATE TABLE IF NOT EXISTS `users` (
 		  `name` VARCHAR(1024) NOT NULL,
 		  `surname` VARCHAR(1024) NOT NULL,
@@ -22,7 +20,7 @@ class UserUpload
 		}
 	}
 
-	protected function parseCommand(): void {
+	protected static function parseCommand(): void {
 		$opts = getopt('u:p:h:d:', [
 			'file:',
 			'create_table',
@@ -78,7 +76,7 @@ class UserUpload
 		self::writeHelp();
 	}
 
-	protected function writeHelp(): void {
+	protected static function writeHelp(): void {
 		echo "\r\nphp -f src/user_upload.php --\r\n";
 		echo "\r\nAvailable options are:\r\n";
 		echo <<< EOT
@@ -105,7 +103,7 @@ class UserUpload
 		EOT;
 	}
 
-	public function init(): void {
+	public static function init(): void {
 		self::parseCommand();
 	}
 }

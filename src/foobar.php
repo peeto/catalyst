@@ -4,12 +4,12 @@ namespace catalyst\foobar;
 
 class FooBar
 {
-	protected function getSeperator(int $n): string {
+	protected static function getSeperator(int $n): string {
 		// Separate the iterations correctly
 		return $n > 1 ? ', ' : '';
 	}
 
-	protected function getIteratorString(int $n): string {
+	protected static function getIteratorString(int $n): string {
 		$output = '';
 		
 		// The next two lines are carfully written to be able to produce foo, bar, or foobar
@@ -22,13 +22,13 @@ class FooBar
 		return self::getSeperator($n) . $output;
 	}
 
-	protected function iterate(): void {
+	protected static function iterate(): void {
 		for ($n = 1; $n <= 100; $n++) {
 			echo self::getIteratorString($n);
 		}
 	}
 
-	public function init(): void {
+	public static function init(): void {
 		self::iterate();
 
 	}

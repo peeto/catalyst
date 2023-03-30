@@ -14,7 +14,7 @@ The Ubuntu server should have the mysqli extension installed, if not the followi
 
 In BASH:
 ```
-sudo apt-get install php-mysql
+src/install.sh
 ```
 
 Add to php.ini:
@@ -25,8 +25,8 @@ extension=php_mysqli.so
 In BASH:
 ```
 sudo phpenmod mysqli
-sudo service apache2 restart
 ```
+
 ### IMPORTANT
 
 The user_upload.php script requires a 'd' parameter to be set that denotes the name of the database. This is to make it easier to test multiple applications at once. See src/user_upload.sql
