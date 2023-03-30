@@ -31,7 +31,8 @@ sudo phpenmod mysqli
 
 The user_upload.php script requires a 'd' parameter to be set that denotes the name of the database. This is to make it easier to test multiple applications at once. See src/user_upload.sql
 
-To do the tests:
+
+To run this from the repository root:
 ```
 php -f src/user_upload.php -- --help
 ```
