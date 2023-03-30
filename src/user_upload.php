@@ -19,6 +19,44 @@ class UserUpload
 			return;
 		}
 
+		if (isset($opts['dry_run']) && !isset($opts['file'])) {
+			echo "\r\n'dry_run' requires 'file' to be specified. Consult help for more information.\r\n\r\n";
+			return;
+		}
+
+		if (isset($opts['dry_run']) && isset($opts['file'])) {
+			// @todo do dry run
+			return;
+		}
+
+		$hasDbOpts = isset($opts['u'])
+			&& isset($opts['p'])
+			&& isset($opts['d'])
+			&& isset($opts['h']);
+
+		if (isset($opts['create_table']) || isset($opts['file'])) {
+			if (!$hasDbOpts) {
+				echo "\r\nAll MySQL options must be provided. Consult help for more information.\r\n\r\n";
+				return;
+			}
+
+			$db = new \mysqli(
+				$opts['h'],
+				$opts['u'],
+				$opts['p'],
+				$opts['d']);
+
+			if (isset($opts['create_table'])) {
+				// @todo create table
+				return;
+			}
+
+			if (isset($opts['file'])) {
+				// @todo import file
+				return;
+			}
+		}
+
 		echo "\r\nCommand not understood\r\n";
 		self::writeHelp();
 	}
@@ -40,7 +78,7 @@ class UserUpload
 
 			-p – MySQL password
 
-			-d – MySQL database
+			-d – MySQL database name
 
 			-h – MySQL host
 
