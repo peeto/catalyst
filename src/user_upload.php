@@ -6,6 +6,22 @@ class UserUpload
 {
 	protected $db;
 
+	protected function createTable($db): void {
+		$sql = "CREATE TABLE IF NOT EXISTS `users` (
+		  `name` VARCHAR(1024) NOT NULL,
+		  `surname` VARCHAR(1024) NOT NULL,
+		  `email` VARCHAR(1024) NOT NULL,
+		  UNIQUE INDEX `email` (`email` ASC) VISIBLE,
+		  INDEX `name` (`name` ASC) VISIBLE,
+		  INDEX `surname` (`surname` ASC) VISIBLE);";
+		
+		if (!$db->query($sql)) {
+			echo "\r\nError: " . $db->error. "\r\n\r\n";
+		} else {
+			echo "\r\nTable `users` created.\r\n\r\n";
+		}
+	}
+
 	protected function parseCommand(): void {
 		$opts = getopt('u:p:h:d:', [
 			'file:',
@@ -45,9 +61,10 @@ class UserUpload
 				$opts['u'],
 				$opts['p'],
 				$opts['d']);
+			$db->query('USE "' . $opts['d'] . '";');
 
 			if (isset($opts['create_table'])) {
-				// @todo create table
+				self::createTable($db);
 				return;
 			}
 
