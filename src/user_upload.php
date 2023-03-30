@@ -16,7 +16,71 @@ class UserUpload
 		if (!$db->query($sql)) {
 			echo "\r\nError: " . $db->error. "\r\n\r\n";
 		} else {
-			echo "\r\nTable `users` created.\r\n\r\n";
+			echo "\r\nTable `users` created or exists.\r\n\r\n";
+		}
+	}
+
+	protected static function parseCSVFile(string $file): array {
+		$results = [];
+		if (($handle = fopen($file, "r")) !== FALSE) {
+			$ignoreHeader = true;
+			while (($data = fgetcsv($handle, 1024, ",")) !== FALSE) {
+				if ($ignoreHeader) {
+					$ignoreHeader = false;
+				} else  {
+					$results[] = $data;
+				}
+			}
+		}
+		return $results;
+	}
+
+	protected static function parseName(string $name): string {
+		return trim(ucfirst(strtolower($name)));
+	}
+
+	protected static function checkEmail(string $email): bool {
+		return !!filter_var(trim($email), FILTER_VALIDATE_EMAIL);
+	}
+
+	protected static function parseEmail(string $email): string {
+		return trim(strtolower($email));
+	}
+
+	protected static function dryRun(string $file): void {
+		$data = self::parseCSVFile($file);
+
+		echo "\r\n". count($data) . " records found\r\n\r\n";
+
+		foreach ($data as $r) {
+			echo "Firstname: " . self::parseName($r[0]);
+			echo " Surname: " . self::parseName($r[1]);
+			if (!self::checkEmail($r[2])) {
+				echo " Invalid email address found!";
+			}
+			echo " Email: " . self::parseEmail($r[2]);;
+			echo "\r\n";
+		}
+		echo "\r\n";
+	}
+
+	protected static function dbUpload($db, string $file): void {
+
+		$data = self::parseCSVFile($file);
+
+		echo "\r\n". count($data) . " records found\r\n\r\n";
+
+		foreach ($data as $r) {
+			if (!self::checkEmail($r[2])) {
+				echo "Invalid email address found: " . self::parseEmail($r[2]) . "\r\n";
+			} else {
+				$sql = "INSERT INTO users (name, surname, email) VALUES (";
+				$sql .= "'" . $db->real_escape_string(self::parseName($r[0])) . "'";
+				$sql .= ", '" . $db->real_escape_string(self::parseName($r[1])) . "'";
+				$sql .= ", '" . $db->real_escape_string(self::parseEmail($r[2])) . "'";
+				$sql .= ");";
+				$db->query($sql);
+			}
 		}
 	}
 
@@ -39,7 +103,7 @@ class UserUpload
 		}
 
 		if (isset($opts['dry_run']) && isset($opts['file'])) {
-			// @todo do dry run
+			self::dryRun($opts['file']);
 			return;
 		}
 
@@ -67,7 +131,7 @@ class UserUpload
 			}
 
 			if (isset($opts['file'])) {
-				// @todo import file
+				self::dbUpload($db, $opts['file']);
 				return;
 			}
 		}
