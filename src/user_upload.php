@@ -217,12 +217,12 @@ class UserUpload
                     $opts['p'],
                     $opts['d']);
                 if ($db->connect_errno) {
-                    echo "Failed to connect to MySQL: " . $db->connect_error . "\r\n\r\n";
+                    echo "\r\nFailed to connect to MySQL: " . $db->connect_error . "\r\n\r\n";
                     exit();
                 }
                 $db->query('USE "' . $db->real_escape_string($opts['d']) . '";');
             } catch (Exception $ex) {
-                echo "Could not connect to database, check parameters and try again.\r\n";
+                echo "\r\nCould not connect to database, check parameters and try again.\r\n";
                 die();
             }
 
